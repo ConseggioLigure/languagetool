@@ -1,3 +1,443 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rules [
+  <!-- Proclitic pronouns, as they appear between a subject clitic and a finite verb. -->
+  <!ENTITY clitichi "me|te|se|ghe|ne|ve|ô|â|î|ê|m['’]|t['’]|s['’]|gh['’]|n['’]|v['’]|l['’]">
+]>
 <rules lang="lij" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../../../languagetool-core/src/main/resources/org/languagetool/rules/rules.xsd">
+  <category id="HOMOPHONES" name="Forme omòfone">
+    <rule id="A_À_AFTER_CLITICS" name="3ª persoña scingolare de l’indicativo presente do verbo “avei”">
+      <pattern>
+        <token regexp="yes">(l|gh)['’]</token>
+        <marker><token>a</token></marker>
+      </pattern>
+      <message>A 3ª persoña scingolare de l’indicativo presente do verbo “avei” a se scrive <suggestion>à</suggestion>, con l’açento grave.</message>
+      <example correction="à">O l'<marker>a</marker> da fâ.</example>
+      <example correction="à">O gh’<marker>a</marker> famme.</example>
+      <example type="correct">A l’<marker>à</marker> da fâ.</example>
+    </rule>
+
+    <rulegroup id="A_À_BEFORE_INFINITIVES" name="prepoxiçion “à” primma de l’infinio de un verbo">
+      <antipattern>
+        <token regexp="yes">(l|gh)['’]</token>
+        <token>a</token>
+      </antipattern>
+      <antipattern>
+        <!-- "A Maria a dâ un libbro": the subject clitic is right, the verb is misspelt (DÀ_STÀ_FA). -->
+        <token postag="(NOUN|PROPN) .*Gender=Fem.*" postag_regexp="yes">
+          <exception postag="(DET|VERB|ADV|ADP).*" postag_regexp="yes"/>
+        </token>
+        <token>a</token>
+        <token min="0">no</token>
+        <token regexp="yes">dâ|fâ|stâ</token>
+      </antipattern>
+      <rule>
+        <!-- Unambiguous infinitive: no 3sg finite reading, no feminine noun/adjective reading. -->
+        <pattern>
+          <marker><token>a</token></marker>
+          <token min="0">no</token>
+          <token regexp="yes" min="0">[«“"]</token>
+          <token postag="VERB .*VerbForm=Inf.*" postag_regexp="yes">
+            <exception postag="VERB .*Number=Sing Person=3 .*VerbForm=Fin.*|(NOUN|ADJ) .*Gender=Fem.*Number=Sing.*" postag_regexp="yes"/>
+          </token>
+        </pattern>
+        <message>A prepoxiçion a se scrive <suggestion>à</suggestion>, con l’açento grave.</message>
+        <example correction="à">O comensa <marker>a</marker> fâ do pan.</example>
+        <example correction="à">Anemmo <marker>a</marker> parlâghe.</example>
+        <example correction="à">O preuva <marker>a</marker> no patî.</example>
+        <example type="correct">A Maria <marker>a</marker> l’é contenta.</example>
+        <example type="correct">A Maria <marker>a</marker> travaggiâ doman.</example>
+        <example type="correct">O mette <marker>a</marker> candidâ in difficoltæ.</example>
+      </rule>
+      <rule>
+        <!-- Infinitive also readable as a feminine noun/participle, disambiguated by a following object. -->
+        <pattern>
+          <marker><token>a</token></marker>
+          <token min="0">no</token>
+          <token regexp="yes" min="0">[«“"]</token>
+          <token postag="VERB .*VerbForm=Inf.*" postag_regexp="yes">
+            <exception postag="VERB .*Number=Sing Person=3 .*VerbForm=Fin.*" postag_regexp="yes"/>
+          </token>
+          <or>
+            <token postag="DET .*" postag_regexp="yes">
+              <exception postag="CCONJ"/>
+            </token>
+            <token postag="ADP\+DET .*" postag_regexp="yes">
+              <exception scope="previous" postag="NOUN .*" postag_regexp="yes"/>
+            </token>
+          </or>
+          <token postag="ADJ.*" postag_regexp="yes" min="0" max="2"/>
+          <token postag="NOUN .*" postag_regexp="yes"/>
+        </pattern>
+        <message>A prepoxiçion a se scrive <suggestion>à</suggestion>, con l’açento grave.</message>
+        <example correction="à">A l’é pronta <marker>a</marker> ciammâ i danni.</example>
+        <example type="correct"><marker>A</marker> camminâ e o concerto en stæti belli.</example>
+        <example type="correct"><marker>A</marker> fermâ de arme a dua 4 giorni.</example>
+      </rule>
+    </rulegroup>
+
+    <rulegroup id="A_À_PREPOSITION" name="prepoxiçion “à”">
+      <antipattern>
+        <token regexp="yes">(l|gh)['’]</token>
+        <token>a</token>
+      </antipattern>
+      <antipattern>
+        <token>Serie</token>
+        <token case_sensitive="yes">A</token>
+      </antipattern>
+      <rule>
+        <!-- Words that can follow neither the article nor the subject clitic "a". -->
+        <pattern>
+          <marker><token>a</token></marker>
+          <token regexp="yes" case_sensitive="yes">un|unn[a'’]|chi|mi|ti|lê|no?iatri|lo?iatri|tutt[eio]|quell[aeio'’]|çert[ei]|tant[ei]|ògni|nisciun|de|di</token>
+        </pattern>
+        <message>A prepoxiçion a se scrive <suggestion>à</suggestion>, con l’açento grave.</message>
+        <example correction="à">Ò dæto un libbro <marker>a</marker> unna amiga.</example>
+        <example correction="À"><marker>A</marker> mi me piaxe.</example>
+        <example correction="à">O pensa <marker>a</marker> lê.</example>
+        <example correction="à">L’Union europea a l’é pronta <marker>a</marker> de mesue conträie.</example>
+        <example type="correct">Ò dæto un libbro <marker>à</marker> unna amiga.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <marker><token>a</token></marker>
+          <or>
+            <token postag="NUM.*" postag_regexp="yes"/>
+            <token regexp="yes">\d+([.,]\d+)*</token>
+          </or>
+        </pattern>
+        <message>A prepoxiçion a se scrive <suggestion>à</suggestion>, con l’açento grave.</message>
+        <example correction="à">A casa a l’é <marker>a</marker> doî pasci.</example>
+        <example correction="à">O treno o va <marker>a</marker> 200 km/h.</example>
+        <example correction="à">E firme son passæ da 13 <marker>a</marker> 5.134.</example>
+      </rule>
+      <rule>
+        <!-- Masculine or plural nouns cannot take the feminine singular article. -->
+        <pattern>
+          <marker><token>a</token></marker>
+          <token postag="(NOUN|ADJ) .*(Gender=Masc|Number=Plur).*" postag_regexp="yes" regexp="yes" case_sensitive="yes">\p{Ll}.*
+            <exception postag="(NOUN|ADJ|VERB) .*Gender=Fem.*Number=(Sing|Coll).*|VERB .*Number=Sing Person=3 .*VerbForm=Fin.*|VERB .*VerbForm=Inf.*" postag_regexp="yes"/>
+            <exception postag="(NOUN|ADJ|VERB).*|SENT_END|PARA_END" postag_regexp="yes" negate_pos="yes"/>
+          </token>
+        </pattern>
+        <message>A prepoxiçion a se scrive <suggestion>à</suggestion>, con l’açento grave.</message>
+        <example correction="à">O mette <marker>a</marker> reisego a vitta.</example>
+        <example correction="à">Ballan <marker>a</marker> son de muxica.</example>
+        <example correction="à">O l’é un missile <marker>a</marker> longo raggio.</example>
+        <example type="correct">O mette <marker>a</marker> casa in ordine.</example>
+        <example type="correct">O l’à perso <marker>a</marker> targa.</example>
+        <example type="correct"><marker>A</marker> Cavo a se candida.</example>
+        <example type="correct">O dà lê <marker>a</marker> sò poula.</example>
+        <example type="correct">A Maria <marker>a</marker> stâ in çittæ.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <marker><token>a</token></marker>
+          <token regexp="yes">l['’]</token>
+          <or>
+            <token postag="(NOUN|PROPN|ADJ|PRON|DET|NUM).*" postag_regexp="yes">
+              <exception postag="VERB .*Number=Sing Person=3 .*VerbForm=Fin.*" postag_regexp="yes"/>
+            </token>
+            <token>indoman</token>
+          </or>
+        </pattern>
+        <message>A prepoxiçion a se scrive <suggestion>à</suggestion>, con l’açento grave.</message>
+        <example correction="à">O torna <marker>a</marker> l’urtimo momento.</example>
+        <example correction="à">O pensa <marker>a</marker> l’exerçito.</example>
+        <example type="correct">A Maria <marker>a</marker> l’é contenta.</example>
+        <example type="correct">De vòtte <marker>a</marker> l’abasta unna poula.</example>
+      </rule>
+    </rulegroup>
+
+    <rulegroup id="À_A" name="pronomme clitico ò articolo “a” scrito “à”">
+      <rule>
+        <pattern>
+          <marker><token>à</token></marker>
+          <token min="0">no</token>
+          <token regexp="yes" min="1" max="2">&clitichi;</token>
+          <token postag="VERB .*Number=Sing Person=3 .*VerbForm=Fin.*" postag_regexp="yes">
+            <exception postag="VERB .*VerbForm=Fin.*|ADP|SENT_END|PARA_END" postag_regexp="yes" negate_pos="yes"/>
+          </token>
+        </pattern>
+        <message>O pronomme clitico soggetto feminin o se scrive <suggestion>a</suggestion>, sensa açento.</message>
+        <example correction="A"><marker>À</marker> s’é fermâ.</example>
+        <example correction="a">A meistra <marker>à</marker> m’à parlou.</example>
+        <example correction="a">A meistra <marker>à</marker> no m’à parlou.</example>
+        <example correction="a">A meistra <marker>à</marker> te parla.</example>
+        <example type="correct">Da un momento <marker>à</marker> l’atro.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <marker><token>à<exception scope="previous" regexp="yes">(l|gh)['’]</exception></token></marker>
+          <token min="0">no</token>
+          <token postag="VERB .*Number=Sing Person=3 .*VerbForm=Fin.*" postag_regexp="yes">
+            <exception postag="VERB (Mood=Cnd.*|.*Tense=(Imp|Fut).*)|SENT_END|PARA_END" postag_regexp="yes" negate_pos="yes"/>
+          </token>
+        </pattern>
+        <message>O pronomme clitico soggetto feminin o se scrive <suggestion>a</suggestion>, sensa açento.</message>
+        <example correction="a">A torta <marker>à</marker> no coxeiva.</example>
+        <example correction="a">A mæ amiga <marker>à</marker> porrieiva tornâ.</example>
+        <example type="correct">O comensa <marker>à</marker> travaggiâ.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <or>
+            <token regexp="yes">durante|sensa</token>
+            <token>tutta<exception scope="previous" regexp="yes" negate="yes">pe|de|con|in</exception></token>
+          </or>
+          <marker><token>à</token></marker>
+          <token postag="(NOUN|ADJ|PROPN) .*Gender=Fem.*Number=Sing.*" postag_regexp="yes"/>
+        </pattern>
+        <message>L’articolo determinativo feminin scingolare o se scrive <suggestion>a</suggestion>, sensa açento.</message>
+        <example correction="a">O l’à dormio durante <marker>à</marker> neutte.</example>
+        <example correction="a">O l’é arrestou chì pe tutta <marker>à</marker> vitta.</example>
+        <example type="correct">O l’é arrivou segondo <marker>à</marker> Zena.</example>
+        <example type="correct">A casa a l’é tutta <marker>à</marker> dispoxiçion.</example>
+      </rule>
+    </rulegroup>
+
+    <rulegroup id="CHI_CHÌ" name="avverbio “chì”">
+      <rule>
+        <pattern>
+          <marker><token>chi</token></marker>
+          <token min="0">no</token>
+          <token regexp="yes">ghe|gh['’]</token>
+          <token inflected="yes" postag="VERB .*VerbForm=Fin.*" postag_regexp="yes">ëse</token>
+          <token postag="DET .*Definite=Ind.*PronType=Art.*" postag_regexp="yes"/>
+          <token postag="ADJ .*" postag_regexp="yes" min="0" max="2"/>
+          <token postag="NOUN .*" postag_regexp="yes">
+            <exception regexp="yes" inflected="yes">momento|segondo|menuto|pittin</exception>
+            <exception postag="ADJ .*" postag_regexp="yes"/>
+          </token>
+        </pattern>
+        <message>L’avverbio o se scrive <suggestion>chì</suggestion>, con l’açento grave.</message>
+        <example correction="Chì"><marker>Chi</marker> gh’é un amigo?</example>
+        <example correction="Chì"><marker>Chi</marker> no gh’é un libbro.</example>
+        <example correction="Chì"><marker>Chi</marker> ghe saià un amigo.</example>
+        <example type="correct">De <marker>chi</marker> o l’é sto libbro?</example>
+        <example type="correct"><marker>Chi</marker> son i nòstri amixi?</example>
+        <example type="correct"><marker>Chi</marker> gh’é un momento?</example>
+        <example type="correct"><marker>Chi</marker> gh’é un segondo?</example>
+        <example type="correct"><marker>Chi</marker> gh’é un menuto?</example>
+        <example type="correct"><marker>Chi</marker> gh’é un pittin?</example>
+        <example type="correct">Con <marker>chi</marker> gh’ò o piaxei de parlâ?</example>
+      </rule>
+    </rulegroup>
+  </category>
+
+  <category id="NEAR_HOMOGRAPHS" name="Forme squæxi omògrafe">
+    <rulegroup id="DÀ_STÀ_FA" name="3ª persoña scingolare de l’indicativo presente di verbi “dâ”, “stâ” e “fâ”">
+      <antipattern>
+        <!-- Infinitive with proclitics after a preposition: "pe no se fâ mâ". -->
+        <token regexp="yes">pe|à|da|de|d['’]|sensa</token>
+        <token>no</token>
+        <token regexp="yes" min="1" max="2">&clitichi;</token>
+        <token regexp="yes">dâ|stâ|fâ</token>
+      </antipattern>
+      <rule>
+        <!-- "sta" after "a" with a feminine noun is the demonstrative: the error is on "a" (A_À_PREPOSITION). -->
+        <antipattern>
+          <token>a</token>
+          <token>sta</token>
+          <token postag="NOUN .*" postag_regexp="yes">
+            <exception postag="(VERB|DET|PRON|ADV|ADP).*" postag_regexp="yes"/>
+          </token>
+        </antipattern>
+        <pattern>
+          <token regexp="yes">o|a|ghe|ne<exception scope="previous" regexp="yes">(l|gh)['’]</exception></token>
+          <token min="0">no</token>
+          <token regexp="yes" min="0" max="2">&clitichi;</token>
+          <marker><token regexp="yes">da|sta</token></marker>
+        </pattern>
+        <message>A 3ª persoña scingolare de l’indicativo presente do verbo “<match no="4" regexp_match="(?i)a$" regexp_replace="â" case_conversion="alllower"/>” a se scrive <suggestion><match no="4" regexp_match="(?i)a$" regexp_replace="à" case_conversion="preserve"/></suggestion>, con l’açento grave.</message>
+        <example correction="stà">O <marker>sta</marker> ben.</example>
+        <example correction="stà">A no se ne <marker>sta</marker> sitta.</example>
+        <example correction="stà">Tutto quello che ne <marker>sta</marker> in gio.</example>
+        <example correction="dà">O me <marker>da</marker> un libbro.</example>
+        <example correction="dà">O te <marker>da</marker> un libbro.</example>
+        <example type="correct">M’an dito che <marker>sta</marker> casa a l’é neuva.</example>
+        <example type="correct">O l’à <marker>da</marker> fâ.</example>
+        <example type="correct"><marker>Da</marker> chì se vedde o mâ.</example>
+        <example type="correct">A l’anava à finî a <marker>sta</marker> mainea.</example>
+        <example type="correct">O l’a <marker>da</marker> fâ.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <token regexp="yes">[ao]|no|quande</token>
+          <token min="0">no</token>
+          <token regexp="yes" min="1" max="2">&clitichi;</token>
+          <marker><token regexp="yes">dâ|stâ</token></marker>
+        </pattern>
+        <message>A 3ª persoña scingolare de l’indicativo presente do verbo “<match no="4" case_conversion="alllower"/>” a se scrive <suggestion><match no="4" regexp_match="[âÂ]" regexp_replace="à" case_conversion="preserve"/></suggestion>, con l’açento grave.</message>
+        <example correction="dà">O me <marker>dâ</marker> un libbro.</example>
+        <example correction="stà">A ghe <marker>stâ</marker> ben.</example>
+        <example correction="DÀ">O ME <marker>DÂ</marker> UN LIBBRO.</example>
+        <example type="correct">O l’à da <marker>dâ</marker> un libbro.</example>
+        <example type="correct">No sò se <marker>stâ</marker> chì.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <token regexp="yes">[ao]|no|quande</token>
+          <token min="0">no</token>
+          <token regexp="yes" min="1" max="2">&clitichi;</token>
+          <marker><token>fâ</token></marker>
+        </pattern>
+        <message>A 3ª persoña scingolare de l’indicativo presente do verbo “fâ” a se scrive <suggestion>fa</suggestion>, sensa açento.</message>
+        <example correction="fa">O se <marker>fâ</marker> mâ.</example>
+        <example correction="fa">O no me <marker>fâ</marker> andâ.</example>
+        <example type="correct">Veddiò se <marker>fâ</marker> quarcösa.</example>
+        <example type="correct">O l’à fæto de tutto pe no se <marker>fâ</marker> mâ.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <token postag="SENT_START"/>
+          <token postag="DET .*" postag_regexp="yes" min="0"/>
+          <token postag="NOUN .*|PROPN .*" postag_regexp="yes">
+            <exception postag="DET .*|VERB .*" postag_regexp="yes"/>
+          </token>
+          <token regexp="yes">[ao]</token>
+          <token min="0">no</token>
+          <marker><token regexp="yes">dâ|stâ</token></marker>
+        </pattern>
+        <message>A 3ª persoña scingolare de l’indicativo presente do verbo “<match no="6" case_conversion="alllower"/>” a se scrive <suggestion><match no="6" regexp_match="[âÂ]" regexp_replace="à" case_conversion="preserve"/></suggestion>, con l’açento grave.</message>
+        <example correction="dà">A Maria a <marker>dâ</marker> un libbro.</example>
+        <example correction="stà">A Maria a <marker>stâ</marker> in çittæ.</example>
+        <example type="correct">O <marker>stâ</marker> solo o no me piaxe.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <token postag="SENT_START"/>
+          <token postag="DET .*" postag_regexp="yes" min="0"/>
+          <token postag="NOUN .*|PROPN .*" postag_regexp="yes">
+            <exception postag="DET .*|VERB .*" postag_regexp="yes"/>
+          </token>
+          <token regexp="yes">[ao]</token>
+          <token min="0">no</token>
+          <marker><token>fâ</token></marker>
+        </pattern>
+        <message>A 3ª persoña scingolare de l’indicativo presente do verbo “fâ” a se scrive <suggestion>fa</suggestion>, sensa açento.</message>
+        <example correction="fa">O zeneise o no <marker>fâ</marker> ecceçion.</example>
+      </rule>
+    </rulegroup>
+
+    <rulegroup id="FA_FÂ_INFINITIVE" name="infinio di verbi “fâ” e “stâ”">
+      <rule>
+        <!-- After a preposition; the musical note "fa" is followed by "à", "a-o", "e" or punctuation. -->
+        <pattern>
+          <token regexp="yes">à|da|pe|sensa</token>
+          <token min="0">no</token>
+          <marker><token>fa</token></marker>
+          <token>
+            <exception regexp="yes">à|a|a-[oaie]|e|diesis|bemolle|\p{P}</exception>
+          </token>
+        </pattern>
+        <message>L’infinio do verbo o se scrive <suggestion>fâ</suggestion>, con l’açento çirconflesso.</message>
+        <example correction="fâ">O l’à da <marker>fa</marker> cantâ i figgeu.</example>
+        <example correction="fâ">No l’ea costion d’anâ à <marker>fa</marker> da belle.</example>
+        <example type="correct">O passa da <marker>fa</marker> à sol.</example>
+        <example type="correct">O passa da <marker>fa</marker> a-o sol.</example>
+        <example type="correct">O passa da <marker>fa</marker> e torna à sol.</example>
+        <example type="correct">O scrive in ciave de <marker>fa</marker>.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <token regexp="yes" inflected="yes">poei|voei|dovei</token>
+          <token min="0">no</token>
+          <marker><token>fa</token></marker>
+        </pattern>
+        <message>L’infinio do verbo o se scrive <suggestion>fâ</suggestion>, con l’açento çirconflesso.</message>
+        <example correction="fâ">O veu <marker>fa</marker> o pan.</example>
+      </rule>
+    </rulegroup>
+
+    <rule id="FÂ_FA_AFTER_TIME" name="avverbio de tempo “fa”">
+      <pattern>
+        <token regexp="yes" inflected="yes">anno|meise|settemaña|giorno|oa|menuto|segondo|tempo|secolo|ann['’]</token>
+        <marker><token>fâ</token></marker>
+        <token regexp="yes">\p{P}</token>
+      </pattern>
+      <message>L’avverbio de tempo o se scrive <suggestion>fa</suggestion>, sensa açento.</message>
+      <example correction="fa">O l’é successo unna settemaña <marker>fâ</marker>.</example>
+      <example correction="fa">Doî anni <marker>fâ</marker>, o l’é partio.</example>
+      <example type="correct">Dòppo vint’anni <marker>fâ</marker> o pan o no me piaxe ciù.</example>
+    </rule>
+
+    <rulegroup id="UNNA_UÑA" name="pronomme indefinio “uña”">
+      <rule>
+        <!-- The article cannot be followed by "de", "che" or punctuation. -->
+        <pattern>
+          <marker><token>unna</token></marker>
+          <or>
+            <token regexp="yes">de|che</token>
+            <token regexp="yes">[.,;:!?»”)…]</token>
+          </or>
+        </pattern>
+        <message>O pronomme indefinio o se scrive <suggestion>uña</suggestion>.</message>
+        <example correction="uña">A l’é <marker>unna</marker> de mæ amighe.</example>
+        <example correction="Uña"><marker>Unna</marker> che canta ben.</example>
+        <example correction="uña">Ne piggio <marker>unna</marker>.</example>
+        <example correction="uña">Tanto pe dîne <marker>unna</marker>, a l’ea in ritardo.</example>
+        <example type="correct">A l’à annonçiou <marker>unna</marker> «reorganizzaçion» di cantonê.</example>
+        <example type="correct">A l’é <marker>unna</marker> sensa cheu.</example>
+        <example type="correct">A l’é <marker>unna</marker> bella notiçia.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <marker><token>unna</token></marker>
+          <token>sola</token>
+          <token>
+            <exception postag="(NOUN|ADJ).*" postag_regexp="yes"/>
+          </token>
+        </pattern>
+        <message>O pronomme indefinio o se scrive <suggestion>uña</suggestion>.</message>
+        <example correction="uña">A veitæ a l’é <marker>unna</marker> sola: a l’é finia.</example>
+        <example type="correct">A l’é <marker>unna</marker> sola persoña.</example>
+      </rule>
+      <rule>
+        <pattern>
+          <marker><token>unna</token></marker>
+          <token>a</token>
+          <token min="0">no</token>
+          <token regexp="yes" min="0" max="2">&clitichi;</token>
+          <token postag="VERB .*Number=Sing Person=3 .*VerbForm=Fin.*" postag_regexp="yes"/>
+        </pattern>
+        <message>O pronomme indefinio o se scrive <suggestion>uña</suggestion>.</message>
+        <example correction="Uña"><marker>Unna</marker> a nasce cuscì.</example>
+        <example correction="Uña"><marker>Unna</marker> a no l’à vista.</example>
+      </rule>
+    </rulegroup>
+
+    <rule id="UÑA_UNNA" name="articolo indeterminativo feminin scingolare “unna”">
+      <pattern>
+        <marker><token>uña</token></marker>
+        <token postag="ADJ .*Gender=Fem.*Number=Sing.*" postag_regexp="yes" min="0" max="2"/>
+        <token postag="NOUN .*Gender=Fem.*Number=(Sing|Coll).*" postag_regexp="yes">
+          <exception postag="NOUN .*Gender=Fem.*Number=(Sing|Coll).*|SENT_END|PARA_END" postag_regexp="yes" negate_pos="yes"/>
+        </token>
+      </pattern>
+      <message>L’articolo indeterminativo feminin scingolare o se scrive <suggestion>unna</suggestion>.</message>
+      <example correction="unna">Ò visto <marker>uña</marker> çigheugna.</example>
+      <example correction="unna">A l’é <marker>uña</marker> bella notiçia.</example>
+      <example type="correct">Sta chì a l’é <marker>uña</marker> de mæ amighe.</example>
+      <example type="correct">Ò visto <marker>uña</marker> bella.</example>
+    </rule>
+
+  </category>
+
+  <category id="AGREEMENT" name="Concordansa">
+    <rule id="O_A_BEFORE_NOUN" name="articolo determinativo feminin scingolare “a”">
+      <pattern>
+        <marker><token>o</token></marker>
+        <token postag="NOUN .*Gender=Fem.*Number=Sing.*" postag_regexp="yes" regexp="yes" case_sensitive="yes">[b-df-hj-np-tv-zçñ].*
+          <exception postag="NOUN .*Gender=Fem.*Number=Sing.*|SENT_END|PARA_END" postag_regexp="yes" negate_pos="yes"/>
+        </token>
+      </pattern>
+      <message>L’articolo determinativo feminin scingolare o se scrive <suggestion>a</suggestion>.</message>
+      <example correction="A"><marker>O</marker> raxon a l’é ciæa.</example>
+      <example correction="a">No veuggio <marker>o</marker> violensa.</example>
+      <example type="correct"><marker>O</marker> scâ o l’é serrou.</example>
+      <example type="correct"><marker>O</marker> mascara o l’é neigro.</example>
+      <example type="correct">O Bucci <marker>o</marker> nòmina i direttoî.</example>
+    </rule>
+  </category>
+
 </rules>

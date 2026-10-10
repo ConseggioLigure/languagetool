@@ -21,9 +21,11 @@ package org.languagetool.language;
 import org.jetbrains.annotations.Nullable;
 import org.languagetool.Language;
 import org.languagetool.UserConfig;
-import org.languagetool.rules.DoublePunctuationRule;
-import org.languagetool.rules.MultipleWhitespaceRule;
 import org.languagetool.rules.Rule;
+import org.languagetool.tagging.Tagger;
+import org.languagetool.tagging.lij.LigurianTagger;
+import org.languagetool.tokenizers.Tokenizer;
+import org.languagetool.tokenizers.lij.LigurianWordTokenizer;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -50,6 +52,16 @@ public class Ligurian extends Language {
     return new Contributor[]{new Contributor("Jean Maillard")};
   }
 
+  @Override
+  public Tagger createDefaultTagger() {
+    return new LigurianTagger();
+  }
+
+  @Override
+  public Tokenizer createDefaultWordTokenizer() {
+    return new LigurianWordTokenizer();
+  }
+
   @Nullable
   @Override
   public String getCommonWordsPath() {
@@ -58,9 +70,6 @@ public class Ligurian extends Language {
 
   @Override
   public List<Rule> getRelevantRules(ResourceBundle messages, UserConfig userConfig, Language motherTongue, List<Language> altLanguages) {
-    return List.of(
-        new DoublePunctuationRule(messages),
-        new MultipleWhitespaceRule(messages, this)
-    );
+    return List.of();
   }
 }

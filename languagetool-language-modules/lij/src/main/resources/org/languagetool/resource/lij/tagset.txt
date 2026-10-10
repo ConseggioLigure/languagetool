@@ -1,0 +1,37 @@
+Tags are based on Universal Dependencies. We serialise UPOS and features into a single string, using a space as a separator both after the UPOS and between the individual features, e.g. `UPOS Feature1=Value1 Feature2=Value2`. Features are canonicalised by sorting them alphabetically, as per UD guidelines. Tags without features do not have a trailing space, e.g. `INTJ`.
+
+We deviate from UD in the following two ways:
+1. Articulated prepositions are tagged as a single token with POS `ADP+DET`, and retain the features of the article. They are assigned the singular masculine form as lemma, e.g. "a-e" has lemma `a-o`.
+2. Verbs with attached clitics retain the base verb's lemma and features, and are given an additional `WithClitics` feature that records the attached clitic sequence, e.g. `WithClitics=selo`. The same approach is used for adverbs with attached clitics.
+
+Parts of speech:
+ADJ      adjective
+ADP      adposition
+ADP+DET  articulated preposition
+ADV      adverb
+CCONJ    coordinating conjunction
+DET      determiner
+INTJ     interjection
+NOUN     noun
+NUM      numeral
+PART     particle
+PRON     pronoun
+PROPN    proper noun
+SCONJ    subordinating conjunction
+VERB     verb
+
+Features:
+Clitic       Yes
+Definite     Def, Ind
+Degree       Abs, Dim, Pej
+Deixis       Prox, Remt
+Gender       Fem, Masc
+Mood         Cnd, Imp, Ind, Sub
+Number       Coll, Plur, Sing
+NumType      Card, Ord
+Person       1, 2, 3
+PronType     Art, Dem, Exc, Ind, Int, Neg, Prs, Rel
+Reflex       Yes
+Tense        Fut, Imp, Past, Pres
+VerbForm     Fin, Ger, Inf, Part
+WithClitics  se, ghe, lo, la, selo, ...

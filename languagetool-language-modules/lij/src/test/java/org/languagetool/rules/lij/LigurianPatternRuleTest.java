@@ -37,9 +37,9 @@ public class LigurianPatternRuleTest extends PatternRuleTest {
   @Test
   public void testLanguage() throws IOException {
     JLanguageTool tool = new JLanguageTool(Languages.getLanguageForShortCode("lij"));
-    assertEquals(0, tool.check("Son nasciuo à Zena.").size());
-    assertEquals(1, tool.check("Son nasciuo  à Zena.").size());
-    assertEquals(0, tool.check("Boñaseia, mondo!").size());
-    assertEquals(1, tool.check("Boñaseia,, mondo!").size());
+    assertEquals(1, tool.check("A Maria a me dâ un libbro.").size());
+    assertEquals("dà", tool.check("A Maria a me dâ un libbro.").get(0).getSuggestedReplacements().get(0));
+    assertEquals(1, tool.check("Preuva a dâ un libbro.").size());
+    assertEquals("à", tool.check("Preuva a dâ un libbro.").get(0).getSuggestedReplacements().get(0));
   }
 }
